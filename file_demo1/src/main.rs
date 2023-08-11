@@ -1,7 +1,5 @@
 use std::{fs::File, io::Read};
 
-
-const SIZE:u32 = 10;
 fn main(){
 
 
@@ -9,9 +7,14 @@ fn main(){
 
     let mut f = File::open(filename).expect("open file failed");
 
-    let mut buf = [0u8;10];
+    let mut buf = [0u8;1024];
     let mut pos = 0;
-    while let Ok(_) = f.read_exact(&mut buf){
+
+    loop {
+        let n = f.read(&mut buf).expect("read failed");
+        if n == 0 {
+            break;
+        }
         print!("[0x{:02x}] ",pos);
         for bytes in buf{
             match bytes{
@@ -20,8 +23,8 @@ fn main(){
                 _ => print!("{:02x} ",bytes)
             }
         }
-        pos += SIZE;
-        println!()
+        pos += n as u32;
+        println!();
     }
 
 }
